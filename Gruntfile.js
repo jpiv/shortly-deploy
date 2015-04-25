@@ -21,7 +21,24 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        mangle: false
+      },
+      my_target: {
+        files: {
+          'public/built.min.js': ['public/client/**/*.js']
+        }
+      }
     },
+
+    concat: {
+      dist: {
+        src: ['public/client/**/*.js'],
+        dest: 'public/built.js'
+      }
+    },
+
+
 
     jshint: {
       files: [
@@ -58,6 +75,13 @@ module.exports = function(grunt) {
     },
 
     shell: {
+      options: {
+          stderr: true,
+          stdout: true
+      },
+      push: {
+        command: "git push azure master"
+      },
       prodServer: {
       }
     },
@@ -93,12 +117,11 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-  ]);
+  grunt.registerTask('build', ['concat','uglify','shell:push']);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      // add your production server task here
+
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
